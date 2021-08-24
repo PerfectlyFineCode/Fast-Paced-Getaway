@@ -1,15 +1,22 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class TileBehavior : MonoBehaviour
 {
+	public bool FallenState;
 	private Rigidbody rb;
 	private bool ShouldDisable;
 
 	private void Awake()
 	{
 		TryGetComponent(out rb);
+	}
+
+	private void Update()
+	{
+		
 	}
 
 	public void StartFalling()

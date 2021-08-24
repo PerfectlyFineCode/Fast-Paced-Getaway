@@ -28,15 +28,32 @@ public class MovingWall : MonoBehaviour
 
 		transform.position += dir * (speed * Time.deltaTime);
 
-		var v = transform.position - Vector3.zero;
-
 		//TODO Fix up this - so if wall goes further than any tile's position - make it fall.
+		tile = generation.cacheTiles;
+		foreach (var t in tile)
+		{
+			var diff = transform.position - t.Value.Platform.position;
+
+			if (Get(diff, Direction) >= 0 && t.Value.IsEnabled &&
+			    t.Value.Platform.TryGetComponent(out TileBehavior behavior))
+				behavior.StartFalling();
+		}
 	}
 
 	private void OnDrawGizmos()
 	{
 		if (tile == null) return;
 		foreach (var t in tile.ToArray()) Gizmos.DrawLine(t.Key, t.Key + Vector3.up * 5);
+	}
+
+	private float Get(Vector3 pos, WallDirection direction)
+	{
+		if (direction.HasFlag(WallDirection.X))
+			return pos.x;
+		if (direction.HasFlag(WallDirection.Y))
+			return pos.y;
+
+		return direction.HasFlag(WallDirection.Z) ? pos.z : 0f;
 	}
 
 	private Vector3 GetDirection(WallDirection direction)
